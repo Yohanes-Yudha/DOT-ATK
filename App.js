@@ -1,9 +1,9 @@
-import React from 'react';
-import {ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
-import {Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount} from 'iconsax-react-native';
+import {useState, React} from 'react';
+import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
+import {Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle} from 'iconsax-react-native';
 import { fontType, colors } from './src/theme';
 export default function App() {
-  return (
+    return (
   <View style={styles.container}>
     <View style={styles.container2}> 
           <View style={styles.tempatlogo}>
@@ -12,18 +12,18 @@ export default function App() {
             <SearchNormal1 style={{padding:12, margin:5}}color={colors.black()} variant="Linear" size={20} /> 
             <TextInput style={{fontSize:15, padding:5, width:200, }} placeholder='cari'></TextInput>
             </View>
-            <Notification style={{marginLeft:-20}}color={colors.black()} variant="Linear" size={50} />
-          </View>
+        <Notification style={{marginLeft:-20}}color={colors.black()} variant="Linear" size={50} />
+        </View>
         <View style={styles.large}>
           <ScrollView horizontal>
           <View style={styles.small} >
-            <Image style={styles.gambar} source={{uri:'https://img.freepik.com/premium-photo/school-equipment-table_200402-857.jpg?size=626&ext=jpg&ga=GA1.1.2121603606.1697641198&semt=ais'}} />
+            <Image style={styles.gambar} source={pic.arraygambar[0]} />
           </View>
           <View style={styles.small} >
-            <Image style={styles.gambar} source={{uri:'https://www.padangexpo.com/wp-content/uploads/2023/06/Alat-Tulis-Kantor-Terbaik-696x462.jpg'}} />
+            <Image style={styles.gambar} source={pic.arraygambar[1]} />
           </View>
           <View style={styles.small} >
-            <Image style={styles.gambar} source={{uri:'https://img.freepik.com/free-photo/school-tools-with-calculator_1101-345.jpg?size=626&ext=jpg&ga=GA1.1.2121603606.1697641198&semt=ais'}} />
+            <Image style={styles.gambar} source={pic.arraygambar[2]} />
           </View>
           </ScrollView>
         </View>      
@@ -40,15 +40,15 @@ export default function App() {
         <ScrollView> 
               <View style={styles.barang} >
                 <Text style={{fontSize:20, color:'#000000',}} >Rp.15.000</Text>
-                <Image style={styles.gambarBarang} source={{uri:'https://img.freepik.com/free-vector/set-vector-sharpened-pencils-various-lengths-with-rubber-sharpener-pencil-shavings_1441-352.jpg?size=626&ext=jpg&ga=GA1.1.2121603606.1697641198&semt=sph'}} />
+                <Image style={styles.gambarBarang} source={pic.arraygambar[3]} />
               </View>
               <View style={styles.barang} >
                 <Text style={{fontSize:20, color:'#000000',}} >Rp.10.000</Text>
-                <Image style={styles.gambarBarang} source={{uri:'https://www.sultan.co.id/wp-content/uploads/2019/09/paper_guide-1200x675.jpg'}} />
+                <Image style={styles.gambarBarang} source={pic.arraygambar[4]} />
               </View>
               <View style={styles.barang} >
                 <Text style={{fontSize:20, color:'#000000',}} >Rp.2.000</Text>
-                <Image style={styles.gambarBarang} source={{uri:'https://img.id.my-best.com/content_section/choice_component/sub_contents/a09635528fb9ee0f00fd2e9a300a4b65.jpg?ixlib=rails-4.3.1&q=70&lossless=0&w=690&fit=max&s=2afaaaa735b7e712dcf836ebcec49a65'}} />
+                <Image style={styles.gambarBarang} source={pic.arraygambar[5]} />
               </View>
         </ScrollView>
       </View>
@@ -57,18 +57,15 @@ export default function App() {
   )
 }
 
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'#FFFFFF',
+    backgroundColor:'#8AF3F8',
     alignItems:'center',
   
   },
   container2:{
-    backgroundColor:'#AEDCC0',
+    backgroundColor:'#54E1E8',
     width: 400,
     height: 370,
     alignItems:'center',
@@ -125,23 +122,18 @@ const styles = StyleSheet.create({
     backgroundColor:'#FFFFFF',
     width: 310,
     height: 310,
-    // alignItems:'center',
-    borderWidth:3,
-    // borderColor:'#7E2C8A',
     borderRadius: 10,
   },
   containerCategories:{
     flexDirection: 'row',
-    backgroundColor: '#218061',
-    borderWidth:1,
-    borderColor:'#B3EFB2',
+    backgroundColor: '#FFFFFF', 
     marginTop:-15,
     margin:10,
     marginLeft:5,
     justifyContent:'space-between',
     borderRadius: 20,
     height: 35,
-    width:"80%",
+    width:"93%",
   },
   containerList:{
     flexDirection: 'column',
@@ -155,7 +147,7 @@ const styles = StyleSheet.create({
   },
   small2: {
     width: 300,
-    height: 400, // Tinggi yang lebih besar dari tinggi containerList
+    height: 400,
     marginTop: 5,
     marginBottom: 10,
     marginRight: 10,
@@ -176,8 +168,29 @@ const styles = StyleSheet.create({
     width: '70%',
     height: '100%',
     marginLeft:10,
+  },
+  modal:{
+    backgroundColor:'#FFFFFF',
+    width: 300,
+    height: 370,
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:10,
+    marginLeft:50,
+    
+  },
+  modalContainer:{
+    justifyContent:'center',
+    alignItems:'center',
+    
+  },
+  closeModal:{
+    position: 'absolute',
+    top: 10, 
+    right: 10, 
+    borderRadius: 20, 
+    padding: 10,
+    marginHorizontal:-10,
+    marginVertical:-10,
   }
-  
-  
-  
 })
