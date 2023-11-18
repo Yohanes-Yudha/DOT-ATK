@@ -1,9 +1,9 @@
 import {useState, React} from 'react';
 import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
 import { ShoppingCart,Back,Bag,Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle} from 'iconsax-react-native';
-import { fontType, colors } from '../../src/theme';
+import { fontType, colors } from '../../theme';
 import {ContentBook, ContentRuler } from '../../IsiKonten';
-export default function Checkout() {
+export default function Checkout({navigate}) {
   let pic ={
     arraygambar: [
       { uri: 'https://img.freepik.com/premium-photo/school-equipment-table_200402-857.jpg?size=626&ext=jpg&ga=GA1.1.2121603606.1697641198&semt=ais'},

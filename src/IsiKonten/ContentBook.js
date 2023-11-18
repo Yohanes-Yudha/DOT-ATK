@@ -1,7 +1,7 @@
 import {useState, React} from 'react';
 import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
 import {Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle} from 'iconsax-react-native';
-import { fontType, colors } from '../src/theme';
+import { fontType, colors } from '../theme';
 const Book = () => {
   let pic ={
     arraygambar: [

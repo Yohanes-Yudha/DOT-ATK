@@ -1,7 +1,7 @@
 import {useState, React} from 'react';
 import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
 import {Brush2,Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle, Paperclip, Note, Note1, NoteSquare, Notepad2, Notepad, NoteText} from 'iconsax-react-native';
-import { fontType, colors } from '../../src/theme';
+import { fontType, colors } from '../../theme';
 import {ContentBook, ContentRuler } from '../../IsiKonten';
 export default function Home() {
   let pic ={
@@ -27,7 +27,7 @@ export default function Home() {
   return (
   <View style={styles.container}>
           <View style={styles.tempatlogo}>
-            <Image style={styles.logo} source={require('../../src/assets/image/pulpenyudans.png')} />
+            <Image style={styles.logo} source={require('../../assets/image/pulpenyudans.png')} />
           <Notification style={{marginRight:20,  }} color={colors.white()} variant="Linear" size={40}/>         
         </View>
         <View style={styles.search}>
@@ -51,7 +51,9 @@ export default function Home() {
         <View style={styles.container2}> 
         {isRulerClicked && <ContentRuler/>}
         {isBookClicked && <ContentBook/>}
-  </View>
+        </View>
+        {/* <View style={styles.navigation}></View> */}
+
   </View> 
   )
 }
@@ -66,10 +68,10 @@ const styles = StyleSheet.create({
     position:'absolute',
     marginTop:50,
     backgroundColor:'#F0EEF0',
-    width: 400,
-    height: 550,
+    width: 380,
+    height: 450,
     alignItems:'center',
-    borderRadius:50,
+    borderRadius:30,
   },
   tempatlogo: {
     width: 370,
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
   },
   containerBarang:{
     marginLeft:10,
-    marginTop:30,
+    marginTop:-30,
     // paddingLeft:5,
     paddingRight:5,
     backgroundColor: '#4CBED8',    
@@ -142,5 +144,11 @@ const styles = StyleSheet.create({
     height: '100%',
     marginLeft:10,
   },
+  navigation:{
+    top:450,
+    backgroundColor:'#F0EEF0',
+    width: 400,
+    height: 50,
+  }
 })
 

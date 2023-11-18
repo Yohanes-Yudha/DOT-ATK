@@ -1,10 +1,10 @@
 import {useState, React} from 'react';
 import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
 import {Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle} from 'iconsax-react-native';
-import { fontType, colors } from '../src/theme';
+import { fontType, colors } from '../theme';
 
 
-const Ruler = () => {
+const Ruler = ({ router }) => {
   let pic ={
     arraygambar: [
       { uri: 'https://down-id.img.susercontent.com/file/sg-11134201-23020-gzktoll6x3mv3b_tn'},
@@ -17,17 +17,20 @@ const Ruler = () => {
   }
   return (
     <ScrollView> 
+      <TouchableOpacity onPress={() => router.navigate('Checkout')}>
         <View style={styles.containerBarang}>
+            
             <View style={styles.barang}>
-            <View style={{flexDirection:'column', justifyContent:'space-between',marginTop:-25, marginBottom:-20}}>
+              <View style={{flexDirection:'column', justifyContent:'space-between',marginTop:-25, marginBottom:-20}}>
               <Text style={{ marginTop:10, fontSize: 20, color: '#000000',fontFamily:fontType['Pjs-Bold'] }}>Penggaris</Text>
               <Text style={{ marginBottom:20,fontSize: 20, color: '#000000',fontFamily:fontType['Pjs-Bold'] }}>Segitiga</Text>
               <Text style={{ fontSize: 15, color: '#000000',fontFamily:fontType['Pjs-Bold'] }}>Rp.10.000</Text>
+             </View>
+              <Image style={styles.gambarBarang} source={pic.arraygambar[0]} />
             </View>
             
-            <Image style={styles.gambarBarang} source={pic.arraygambar[0]} />
-            </View>
         </View>
+        </TouchableOpacity>
         <View style={[styles.containerBarang, {backgroundColor: '#FFA31A'}]}>
               <View style={styles.barang}>
                 <View style={{flexDirection:'column', justifyContent:'space-between',marginTop:-25, marginBottom:-20}}>

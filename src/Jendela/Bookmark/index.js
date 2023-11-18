@@ -1,7 +1,7 @@
 import {useState, React} from 'react';
 import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
 import { ShoppingCart,Back,Bag,Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle, Star} from 'iconsax-react-native';
-import { fontType, colors } from '../../src/theme';
+import { fontType, colors } from '../../theme';
 import {ContentBook, ContentRuler } from '../../IsiKonten';
 export default function Bookmark() {
   let pic ={
@@ -87,10 +87,10 @@ const styles = StyleSheet.create({
     position:'absolute',
     marginTop:50,
     backgroundColor:'#F0EEF0',
-    width: 400,
-    height: 550,
+    width: 360,
+    height: 570,
     alignItems:'center',
-    borderRadius:50,
+    borderRadius:20,
   },
   containerDeskripsi:{
     paddingTop:20,
