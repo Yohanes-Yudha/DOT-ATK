@@ -1,5 +1,5 @@
-import {useState, React} from 'react';
-import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
+import React, {useState, useRef, useEffect } from 'react';
+import { Animated, Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
 import {Brush2,Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle, Paperclip, Note, Note1, NoteSquare, Notepad2, Notepad, NoteText} from 'iconsax-react-native';
 import { fontType, colors } from '../../theme';
 import {ContentBook, ContentRuler } from '../../IsiKonten';
@@ -24,37 +24,52 @@ export default function Home() {
     setIsRulerClicked(true);
     setIsBookClicked(false);
   };
+  const scrollY = new Animated.Value(0);
+  const diffClampY = Animated.diffClamp(scrollY, 0, 52);
+  const categoriesY = diffClampY.interpolate({
+    inputRange: [0, 42],
+    outputRange: [0, -10],
+  });
+  const [fadeAnim] = useState(new Animated.Value(0)); 
+  React.useEffect(() => {
+    Animated.timing(
+      fadeAnim,
+      {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }
+    ).start();
+  }, [fadeAnim]);
   return (
-  <View style={styles.container}>
+    <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
           <View style={styles.tempatlogo}>
             <Image style={styles.logo} source={require('../../assets/image/pulpenyudans.png')} />
-          <Notification style={{marginRight:20,  }} color={colors.white()} variant="Linear" size={40}/>         
+            <Notification style={{marginRight:20,  }} color={colors.white()} variant="Linear" size={40}/>         
         </View>
-        <View style={styles.search}>
-            <SearchNormal1 style={{marginLeft:20, marginTop:-4}}color={colors.white()} variant="Linear" size={20} /> 
-            <TextInput style={{fontSize:15, marginTop:-10, marginLeft:20, padding:1, width:200, }} placeholder='cari'></TextInput>
+            <View style={styles.search}>
+              <SearchNormal1 style={{marginLeft:20, marginTop:-4}}color={colors.white()} variant="Linear" size={20} /> 
+              <TextInput style={{fontSize:15, marginTop:-10, marginLeft:20, padding:1, width:200, }} placeholder='cari'></TextInput>
             </View>        
-          <View style={styles.containerCategories} >            
-          <ScrollView horizontal>
-            <TicketDiscount style={{ marginRight:20}}color={colors.white()} variant="Linear" size={35}/>
+        <View style={styles.container2}> 
+        <Animated.View style={[styles.containerCategories, {transform:[{translateY:categoriesY}]}]}>      
+            <ScrollView horizontal>
+            <TicketDiscount style={{ marginRight:20}}color={color="#035AA6"} variant="Linear" size={35}/>
             <TouchableOpacity onPress={handleBookClick}>
-            <Book1 style={{marginRight:20,}}color={colors.white()} variant="Linear" size={35}/>
+            <Book1 style={{marginRight:20,}}color={color="#035AA6"} variant="Linear" size={35}/>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleRulerClick}>
-            <RulerPen style={{marginRight:20,}} color={colors.white()} variant="Linear" size={35}/>
+            <RulerPen style={{marginRight:20,}} color={color="#035AA6"} variant="Linear" size={35}/>
             </TouchableOpacity>
-            <Brush2 style={{marginRight:20,}} color={colors.white()} variant="Linear" size={34}/>
-            <NoteText style={{marginRight:20,}} color={colors.white()} variant="Linear" size={34}/>
-            <Category style={{marginRight:20,}} color={colors.white()} variant="Linear" size={34}/>
+            <Brush2 style={{marginRight:20,}} color={color="#035AA6"} variant="Linear" size={34}/>
+            <NoteText style={{marginRight:20,}} color={color="#035AA6"} variant="Linear" size={34}/>
+            <Category style={{marginRight:20,}} color={color="#035AA6"} variant="Linear" size={34}/>
             </ScrollView>
-          </View> 
-        <View style={styles.container2}> 
-        {isRulerClicked && <ContentRuler/>}
-        {isBookClicked && <ContentBook/>}
+         </Animated.View> 
+        {isRulerClicked && <ContentRuler scrollY={scrollY}/>}
+        {isBookClicked && <ContentBook scrollY={scrollY}/>}
         </View>
-        {/* <View style={styles.navigation}></View> */}
-
-  </View> 
+  </Animated.View> 
   )
 }
 const styles = StyleSheet.create({
@@ -64,12 +79,12 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },
   container2:{
-    top:200,
+    top:150,
     position:'absolute',
     marginTop:50,
     backgroundColor:'#F0EEF0',
     width: 380,
-    height: 450,
+    height: 550,
     alignItems:'center',
     borderRadius:30,
   },
@@ -105,9 +120,9 @@ const styles = StyleSheet.create({
   },
   containerCategories:{
     flexDirection: 'row',
-    marginTop:45,
+    marginTop:12,
     margin:30,
-    marginBottom:35,
+    marginBottom:2,
     justifyContent:'space-between',
     paddingRight:20,
     paddingLeft:20,

@@ -1,8 +1,9 @@
-import {useState, React} from 'react';
-import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
+import {useRef, useState, React} from 'react';
+import {Animated, Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
 import {Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle} from 'iconsax-react-native';
 import { fontType, colors } from '../theme';
-const Book = () => {
+
+const Book = ({ scrollY }) => {
   let pic ={
     arraygambar: [
       { uri: 'https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/10/20/71e10c77-669c-41db-99a8-db67d4803ecf.jpg'},
@@ -13,8 +14,19 @@ const Book = () => {
       { uri: 'https://img.id.my-best.com/content_section/choice_component/sub_contents/a09635528fb9ee0f00fd2e9a300a4b65.jpg?ixlib=rails-4.3.1&q=70&lossless=0&w=690&fit=max&s=2afaaaa735b7e712dcf836ebcec49a65'},
     ]
   }
+  
   return (         
-      <ScrollView> 
+      <Animated.ScrollView
+      showsVerticalScrollIndicator={false}
+      onScroll={Animated.event(
+        [{nativeEvent: {contentOffset: {y: scrollY}}}],
+        {useNativeDriver: true},
+      )}
+      contentContainerStyle={{
+        paddingHorizontal: 24,
+        paddingTop: 62,
+        paddingBottom: 54,
+      }}> 
         <View style={[styles.containerBarang, {backgroundColor: '#FFA31A'}]}>
             <View style={styles.barang}>
             <View style={{flexDirection:'column', justifyContent:'space-between',marginTop:-25, marginBottom:-20}}>
@@ -51,7 +63,7 @@ const Book = () => {
              <Image style={styles.gambarBarang} source={pic.arraygambar[4]} />
            </View>
         </View>    
-      </ScrollView>
+      </Animated.ScrollView>
   );
 };
 

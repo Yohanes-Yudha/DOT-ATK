@@ -1,9 +1,31 @@
-import {useState, React} from 'react';
-import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
+import  React, {useRef, useEffect, useState} from 'react';
+import { Animated, Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
 import { ShoppingCart,Back,Bag,Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle, Star} from 'iconsax-react-native';
 import { fontType, colors } from '../../theme';
 import {ContentBook, ContentRuler } from '../../IsiKonten';
 export default function Bookmark() {
+   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [fadeAnim] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    setIsPageLoaded(true); // Setelah komponen dimuat, ubah kondisi menjadi true
+
+    return () => {
+      // Cleanup function saat komponen di-unmount
+      setIsPageLoaded(false); // Saat navigasi ke halaman lain, ubah kondisi menjadi false
+    };
+  }, []);
+
+  // Gunakan kondisi isPageLoaded dalam pengaturan animasi atau komponen yang ingin Anda kendalikan
+  useEffect(() => {
+    if (isPageLoaded) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isPageLoaded]);
   let pic ={
     arraygambar: [
       { uri: 'https://img.freepik.com/premium-photo/school-equipment-table_200402-857.jpg?size=626&ext=jpg&ga=GA1.1.2121603606.1697641198&semt=ais'},
@@ -14,15 +36,29 @@ export default function Bookmark() {
       { uri: 'https://img.id.my-best.com/content_section/choice_component/sub_contents/a09635528fb9ee0f00fd2e9a300a4b65.jpg?ixlib=rails-4.3.1&q=70&lossless=0&w=690&fit=max&s=2afaaaa735b7e712dcf836ebcec49a65'},
     ]
   }
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const diffClampY = Animated.diffClamp(scrollY, 0, 50);
+  const containerY = diffClampY.interpolate({
+    inputRange: [0, 40],
+    outputRange: [0, -40],
+  });
+  
   return (
-  <View style={styles.container}>
+  <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
     <View style={styles.tempatlogo}>
       <Back style={{ marginLeft: 10, marginTop:5, }} color={colors.white()} variant="Linear" size={40}/> 
-            <Text style={{marginLeft: -20, fontFamily:fontType['Pjs-Bold'],color:'#FFFFFF', fontSize:25}} >Bookmark</Text>
+            
+            <Text style={{ marginLeft: -20, fontFamily: fontType['Pjs-Bold'], color: '#FFFFFF', fontSize: 25,  }}>Bookmark</Text>
       <Star style={{ marginLeft: -20, marginRight:15, marginTop:5, }} color={colors.white()} variant="Linear" size={40}/>          
     </View>
-    <View style={styles.container2}>
-    <ScrollView>
+    <Animated.View style={[styles.container2, {transform:[{translateY:containerY}]}]}>
+    <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {useNativeDriver: true},
+        )}
+       >
     <View style={styles.containerBarang}>
               <View style={styles.barang}>
                 <Image style={styles.gambarBarang} source={pic.arraygambar[1]} />
@@ -71,9 +107,21 @@ export default function Bookmark() {
                 </View>
               </View>
     </View>
-    </ScrollView>
-    </View>  
-  </View> 
+    <View style={styles.containerBarang}>
+              <View style={styles.barang}>
+                <Image style={styles.gambarBarang} source={pic.arraygambar[4]} />
+                <View style={styles.textContainer}>
+                <Text style={{ marginLeft:10, fontSize: 15, color: '#000000' ,fontFamily:fontType['Pjs-Bold']}}>Satu Set Buku</Text>
+                <Text style={{ marginLeft:10, fontSize: 10, color: '#000000' ,fontFamily:fontType['Pjs-ExtraBold']}}>Rp.30.000</Text>
+                </View>
+                <View style={styles.containerButton}>
+                    <ShoppingCart style={{ marginTop:-15, marginLeft:1, }} color={colors.black()} variant="Linear" size={30}/>
+                </View>
+              </View>
+    </View>
+    </Animated.ScrollView>
+    </Animated.View>  
+  </Animated.View> 
   )
 }
 const styles = StyleSheet.create({
@@ -82,13 +130,29 @@ const styles = StyleSheet.create({
     backgroundColor:'#035AA6',
     alignItems:'center',  
   },
+  header: {
+    paddingHorizontal: 24,
+    
+    alignItems: 'center',
+    height: 52,
+    paddingTop: 8,
+    paddingBottom: 4,
+    position: 'absolute',
+    top: 0,
+    zIndex: 1000,
+    right: 0,
+    left: 0,
+    
+  },
   container2:{
+    
+    zIndex: 500,
     top:70,
     position:'absolute',
     marginTop:50,
     backgroundColor:'#F0EEF0',
     width: 360,
-    height: 570,
+    height: 600,
     alignItems:'center',
     borderRadius:20,
   },

@@ -1,10 +1,10 @@
 import {useState, React} from 'react';
-import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
+import { Animated,Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
 import {Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle} from 'iconsax-react-native';
 import { fontType, colors } from '../theme';
 
 
-const Ruler = ({ router }) => {
+const Ruler = ({ scrollY }) => {
   let pic ={
     arraygambar: [
       { uri: 'https://down-id.img.susercontent.com/file/sg-11134201-23020-gzktoll6x3mv3b_tn'},
@@ -16,7 +16,17 @@ const Ruler = ({ router }) => {
     ]
   }
   return (
-    <ScrollView> 
+    <Animated.ScrollView
+      showsVerticalScrollIndicator={false}
+      onScroll={Animated.event(
+        [{nativeEvent: {contentOffset: {y: scrollY}}}],
+        {useNativeDriver: true},
+      )}
+      contentContainerStyle={{
+        paddingHorizontal: 24,
+        paddingTop: 62,
+        paddingBottom: 54,
+      }}> 
       <TouchableOpacity onPress={() => router.navigate('Checkout')}>
         <View style={styles.containerBarang}>
             
@@ -69,7 +79,7 @@ const Ruler = ({ router }) => {
                 <Image style={styles.gambarBarang} source={pic.arraygambar[5]} />
               </View>
               </View>          
-    </ScrollView>
+    </Animated.ScrollView>
   );
 };
 
