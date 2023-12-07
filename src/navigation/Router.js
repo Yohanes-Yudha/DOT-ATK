@@ -5,7 +5,8 @@ import Home from '../Jendela/Home';
 import Checkout from '../Jendela/Checkout';
 import Bookmark from '../Jendela/Bookmark';
 import Cart from '../Jendela/Cart';
-import {ShoppingCart, Home2, LocationDiscover, Receipt21, ProfileCircle} from 'iconsax-react-native'; 
+import TambahData from '../Jendela/TambahData';
+import {ShoppingCart, Home2, LocationDiscover, Receipt21, ProfileCircle, AddSquare} from 'iconsax-react-native'; 
 import { fontType, colors } from '../theme';
 
 const Tab = createBottomTabNavigator();
@@ -20,13 +21,14 @@ function MainApp() {
         tabBarStyle: {
           paddingBottom: 10,
           paddingTop: 10,
-          height: 60,
+          height: 50,
         },
         tabBarLabelStyle: {
           marginTop: 10,
           fontSize: 10,
           fontFamily: fontType['Pjs-Medium'],
         },
+        
       }}>
       <Tab.Screen
         name="Home"
@@ -65,6 +67,21 @@ function MainApp() {
           tabBarLabel: 'Bookmark',
           tabBarIcon: ({focused, color}) => (
             <Receipt21
+              color={color}
+              variant={focused ? 'Bold' : 'Linear'}
+              size={24}
+            />
+          ),
+          headerShown: false,
+        }}
+      />
+       <Tab.Screen
+        name="TambahData"
+        component={TambahData}
+        options={{
+          tabBarLabel: 'TambahData',
+          tabBarIcon: ({focused, color}) => (
+            <AddSquare
               color={color}
               variant={focused ? 'Bold' : 'Linear'}
               size={24}
