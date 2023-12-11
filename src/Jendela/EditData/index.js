@@ -104,6 +104,10 @@ const handleUpload = async () => {
       console.log(e);
     }
   };
+<<<<<<< HEAD
+=======
+
+>>>>>>> e9d3e078a990ecb34cdeaa5542224e77db130d8c
   return (
   <View style={styles.container}>
     <View style={styles.tempatlogo}>
