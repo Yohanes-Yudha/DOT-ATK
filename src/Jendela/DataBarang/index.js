@@ -1,54 +1,39 @@
-import React, { useState, useRef,  useCallback} from 'react';
+import React, { useState, useRef, useEffect, useCallback} from 'react';
 import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
 import { ShoppingCart,Back,Bag,Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle} from 'iconsax-react-native';
 import { fontType, colors } from '../../theme';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import axios from 'axios';
-export default function DataBarang({navigation}) {
- 
-
-  const handleDelete = async (id) => {
-    await axios.delete(`https://65715f5bd61ba6fcc012594d.mockapi.io/DotATK/barang/${id}`)
-       .then(() => {
-         navigation.navigate('DataBarang');
-       })
-       .catch((error) => {
-         console.error(error);
-       });
-   }
- 
-  const handleEdit=(id)=>{
-    navigation.navigate('EditData', {id})
-  };
-  const [dataBarang, setDataBarang] = useState([]); 
-  const getDataBarang = async () => {
-    try {
-      const response = await axios.get(
-        'https://65715f5bd61ba6fcc012594d.mockapi.io/DotATK/barang',
-      );
-      setDataBarang(response.data);
-    } catch (error) {
-        console.error(error);
-    }
-  };
-  
-  useFocusEffect(
-    useCallback(() => {
-      getDataBarang();
-    }, [])
-  );
+import FastImage from 'react-native-fast-image';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
+export default function DataBarang() {
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const [dataBarang, setBlogData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('barang')
+      .onSnapshot(querySnapshot => {
+        const barangs = [];
+        querySnapshot.forEach(documentSnapshot => {
+          barangs.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setBlogData(barangs);
+        setLoading(false);
+      });
+    return () => subscriber();
+  }, []);
 
   
-  // let pic ={
-  //   arraygambar: [
-  //     { uri: 'https://img.freepik.com/premium-photo/school-equipment-table_200402-857.jpg?size=626&ext=jpg&ga=GA1.1.2121603606.1697641198&semt=ais'},
-  //     { uri: 'https://www.padangexpo.com/wp-content/uploads/2023/06/Alat-Tulis-Kantor-Terbaik-696x462.jpg' },
-  //     { uri: 'https://img.freepik.com/free-photo/school-tools-with-calculator_1101-345.jpg?size=626&ext=jpg&ga=GA1.1.2121603606.1697641198&semt=ais' },
-  //     { uri: 'https://img.freepik.com/free-vector/set-vector-sharpened-pencils-various-lengths-with-rubber-sharpener-pencil-shavings_1441-352.jpg?size=626&ext=jpg&ga=GA1.1.2121603606.1697641198&semt=sph'},
-  //     { uri: 'https://www.sultan.co.id/wp-content/uploads/2019/09/paper_guide-1200x675.jpg'},
-  //     { uri: 'https://img.id.my-best.com/content_section/choice_component/sub_contents/a09635528fb9ee0f00fd2e9a300a4b65.jpg?ixlib=rails-4.3.1&q=70&lossless=0&w=690&fit=max&s=2afaaaa735b7e712dcf836ebcec49a65'},
-  //   ]
-  // }
+  const handleEdit = async (id) => {
+    navigation.navigate('EditData', {id});
+  };
+
   return (
   <View style={styles.container}>
     <View style={styles.tempatlogo}>
@@ -62,7 +47,9 @@ export default function DataBarang({navigation}) {
       {dataBarang.map((barang, index) => ( 
         <View style={styles.containerBarang}>        
       <View key={index}>
-      <Image style={styles.gambarBarang} source={{ uri: barang.image }} />
+        
+      <Image style={styles.gambarBarang} source={{ uri: barang.image }}   onLoad={() => console.log("Gambar berhasil dimuat")} // Log jika gambar berhasil dimuat
+       onError={() => console.log("URL Gambar:", barang.image)}  />
       <View style={styles.barang}>
           <View style={styles.containerDeskripsi}>
             <Text style={{ marginTop: -35, paddingLeft: 10, fontSize: 20, color: '#000000', fontFamily: fontType['Pjs-Bold'], paddingBottom: 20 }}>

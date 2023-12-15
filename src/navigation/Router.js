@@ -10,7 +10,8 @@ import DataBarang from '../Jendela/DataBarang';
 import EditData from '../Jendela/EditData';
 import {ShoppingCart, Home2, LocationDiscover, Receipt21, ProfileCircle, AddSquare, ShoppingBag} from 'iconsax-react-native'; 
 import { fontType, colors } from '../theme';
-
+import Login from '../Login';
+import Register from '../Register';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 function MainApp() {
@@ -113,7 +114,7 @@ function MainApp() {
 }
 const Router = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName='Login'>
       <Stack.Screen
         name="MainApp"
         component={MainApp}
@@ -141,6 +142,20 @@ const Router = () => {
           gestureEnabled: true,
           gestureDirection : 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          headerShown: false, 
+        }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{
+          headerShown: false, 
         }}
       />
     </Stack.Navigator>

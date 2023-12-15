@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "41664238078",
+    "project_id": "dotatk-f394c",
+    "storage_bucket": "dotatk-f394c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:41664238078:android:0c925201326399d23930af",
+        "android_client_info": {
+          "package_name": "com.dot_atk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAacMLFqMGyer_19iErutaAGVgkmdBOGaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,113 +1,131 @@
-import {useState, React, useEffect, useRoute} from 'react';
-import { Modal, Alert,TouchableOpacity, Button, ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground} from 'react-native';
-import { ShoppingCart,Back,Bag,Notification, Receipt21, Clock, Message, SearchNormal1, RulerPen, Category, Book1, TicketDiscount, BagCross, CloseCircle, Money, Money2, Money4, Money3, ImportSquare, DocumentSketch, Note, Subtitle, Okru, Check, LikeShapes, PasswordCheck, TransmitSquare, AddSquare} from 'iconsax-react-native';
+import React, { useState, useEffect } from 'react';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { ScrollView, StyleSheet, Text, TextInput, View ,TouchableOpacity, Image} from 'react-native';
+import { Add, Back, AddSquare, Book1, Money3, ImportSquare, Note, TransmitSquare } from 'iconsax-react-native';
 import { fontType, colors } from '../../theme';
-import {ContentBook, ContentRuler } from '../../IsiKonten';
-import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
-
+import firestore from '@react-native-firebase/firestore';
+import FastImage from 'react-native-fast-image';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
 const EditData = ({route}) => {
-    
-    const { id } = route.params;
-const navigation = useNavigation();
-const [loading, setLoading] = useState(false);
-
-const [dataBarang, setDataBarang] = useState({
-    name: " ",
-    price: " ",
-    image ,
-    description:" ",
-    createdAt: new Date(),
+  const [oldImage, setOldImage] = useState(null);
+  const [image, setGambar] = useState(null);
+  const { id } = route.params;
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const [DataBarang, setDataBarang] = useState({
+    name: '',
+    price: '',
+    image: '',
+    description: '',
   });
   const handleChange = (key, value) => {
     setDataBarang({
-      ...dataBarang,
+      ...DataBarang,
       [key]: value,
     });
-  };
-  const [image, setGambar] = useState(null);
-
-useEffect(() => {
-    getBarangById();
-}, [id]);
-
-const handleUpload = async () => {
-  setLoading(true);
-  try {
-    await axios.post('https://65715f5bd61ba6fcc012594d.mockapi.io/DotATK/barang', {
-        name: form.nama,
-        price: form.harga,
-        image ,
-        description: form.deskripsi,
-        createdAt: new Date(),
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
+    };
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('barang')
+      .doc(id)
+      .onSnapshot(documentSnapshot => {
+        const dataBarang = documentSnapshot.data();
+        if (dataBarang) {
+          console.log('Barang data: ', dataBarang);
+          setDataBarang({
+            name: dataBarang.name,
+            price: dataBarang.price,
+            description: dataBarang.description,
+            createdAt: new Date(),
+          });
+          setOldImage(dataBarang.image);
+          setGambar(dataBarang.image);
+          setLoading(false);
+        } else {
+          console.log(`Barang with ID ${id} not found.`);
+        }
       });
     setLoading(false);
-    navigation.navigate('DataBarang');
-  } catch (e) {
-    console.log(e);
+    return () => subscriber();
+  }, [id]);
+console.log(DataBarang)
+  const handleImagePick = async () => {
+    ImagePicker.openPicker({
+      width: 1920,
+      height: 1080,
+      cropping: true,
+    })
+      .then(image => {
+        console.log(image);
+        setGambar(image.path);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };    
+
+const handleUpdate = async () => {
+  setLoading(true);
+  let filename = image.substring(image.lastIndexOf('/') + 1);
+  const extension = filename.split('.').pop();
+  const name = filename.split('.').slice(0, -1).join('.');
+  filename = name + Date.now() + '.' + extension;
+  const reference = storage().ref(`barangimages/${filename}`);
+  try {
+    if (image !== oldImage && oldImage) {
+      const oldImageRef = storage().refFromURL(oldImage);
+      console.log(oldImageRef);
+      await oldImageRef.delete();
+    }
+    if (image !== oldImage) {
+      await reference.putFile(image);
+    }
+    const url =
+      image !== oldImage ? await reference.getDownloadURL() : oldImage;
+      await firestore().collection('barang').doc(id).update({
+        name: DataBarang.nama,
+        price: DataBarang.harga,
+        image: url ,
+        description: DataBarang.deskripsi,
+        createdAt: new Date(),
+    });
+    setLoading(false);
+    console.log('Barang Updated!');
+    navigation.navigate('DataBarang', {id});
+  } catch (error) {
+    console.log(error);
   }
 };
-    const [form, setForm] = useState({
-    nama: "",
-    harga: "",
-    deskripsi:""
-  });
-  const handleForm = (key, value) => {
-    setForm({
-      ...form,
-      [key]: value,
-    });
-  };
-  const getBarangById = async () => {
-    try {
-      const response = await axios.get(
-        `https://65715f5bd61ba6fcc012594d.mockapi.io/DotATK/barang/${id}`,
-      );
-      setDataBarang({
-        name : response.data.nama,
-        price : response.data.harga,
-        image,
-        description: response.data.deskripsi,
-      })
-      setGambar(response.data.image)
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const handleUpdate = async () => {
-    setLoading(true);
-    try {
-      await axios
-        .put(`https://65715f5bd61ba6fcc012594d.mockapi.io/DotATK/barang/${id}`, {
-            dataBarang,
-            name : dataBarang.nama,
-            price : dataBarang.harga,
-            image,
-            description: dataBarang.deskripsi,
-        })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      setLoading(false);
-      navigation.navigate('DataBarang');
-    } catch (e) {
-      console.log(e);
-    }
-  };
-<<<<<<< HEAD
-=======
+// const handleUpdate = async () => {
+//     setLoading(true);
+//     let filename = image.substring(image.lastIndexOf('/') + 1);
+//     const extension = filename.split('.').pop();
+//     const name = filename.split('.').slice(0, -1).join('.');
+//     filename = name + Date.now() + '.' + extension;
+//     const reference = storage().ref(`barangimages/${filename}`);
+// // setLoading(true);
+//     try {
+//       await reference.putFile(image);
+//       const url = await reference.getDownloadURL();
+//       await firestore().collection('barang').add({
+//       name: form.nama,
+//       price: form.harga,
+//       image ,
+//       description: form.deskripsi,
+//       createdAt: new Date(),
+//     });
+//     setLoading(false);
+//     console.log('Tambah Barang Berhasil!');
+//     navigation.navigate('DataBarang');
+//     }  catch (error) {
+//       console.log(error);
+//     }
+//   };
 
->>>>>>> e9d3e078a990ecb34cdeaa5542224e77db130d8c
+
+
+
   return (
   <View style={styles.container}>
     <View style={styles.tempatlogo}>
@@ -130,7 +148,7 @@ const handleUpload = async () => {
                 <Book1 style={{marginLeft:10, marginRight:10,  marginTop:-4}}color={colors.grey()} variant="Linear" size={20}/>
                 <TextInput
                     placeholder="Nama Barang"
-                    value={dataBarang.name}
+                    value={DataBarang.name}
                     onChangeText={(text) => handleChange("nama", text)}
                     placeholderTextColor={colors.grey(0.6)}
                     style={{color: 'black', fontSize:15, marginTop:-5,  width:200,   }}
@@ -143,7 +161,7 @@ const handleUpload = async () => {
              <Money3 style={{marginLeft:10, marginRight:10,  marginTop:-4}}color={colors.grey()} variant="Linear" size={20}/>
                 <TextInput
                     placeholder="Harga"
-                    value={dataBarang.price}
+                    value={DataBarang.price}
                     onChangeText={(text) => handleChange("harga", text)}
                     placeholderTextColor={colors.grey(0.6)}
                     style={{color: 'black', fontSize:15, marginTop:-5,  width:200,    }}
@@ -151,17 +169,57 @@ const handleUpload = async () => {
              </View>
         </View>
         <Text style={{ marginBottom:-20, marginTop:20, marginLeft:-10,fontSize: 15, color: '#000000', fontFamily:fontType['Pjs-Bold'],  }}>Masukkan Gambar Barang</Text>
-        <View style={styles.containerForm}>     
-             <View style={styles.itemForm}>
-             <ImportSquare style={{marginLeft:10, marginRight:10,  marginTop:-4}}color={colors.grey()} variant="Linear" size={20}/>
-                <TextInput
-                    placeholder="Gambar"
-                    value={image}
-                    onChangeText={(text) => setGambar(text)}
-                    placeholderTextColor={colors.grey(0.6)}
-                    style={{color: 'black', fontSize:15, marginTop:-5,  width:200,  }}
-                />
-             </View>
+        <View style={styles.containerFormGambar}>     
+             
+             <Image style={styles.gambarBarang} source={{ uri: DataBarang.image }}   onLoad={() => console.log("Gambar berhasil dimuat")}/>
+             {image ? (
+          <View style={styles.itemFormGambar}>
+            <FastImage
+              style={{width: '100%', height: 127, borderRadius: 5}}
+              source={{
+                uri: image,
+                headers: {Authorization: 'someAuthToken'},
+                priority: FastImage.priority.high,
+              }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
+            <TouchableOpacity
+              style={{
+                top: -105,
+                right: 15,
+                backgroundColor: colors.black(),
+                borderRadius: 25, 
+              }}
+              onPress={() => setGambar(null)}>
+              <Add
+                size={20}
+                variant="Linear"
+                color={colors.white()}
+                style={{transform: [{rotate: '45deg'}]}}
+              />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity onPress={handleImagePick}>
+            <View
+              style={{
+                  marginLeft:10, marginRight:10,  marginTop:25,
+                  gap: 10,
+                  paddingVertical: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+              <AddSquare color={colors.black(0.6)} variant="Linear" size={30} />
+              <Text
+                style={{
+                  fontFamily: fontType['Pjs-Regular'],
+                  fontSize: 12,
+                  color: colors.grey(0.6),
+                }}>
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )} 
         </View>
         <Text style={{ marginBottom:-20,marginTop:20, marginLeft:-10,fontSize: 15, color: '#000000', fontFamily:fontType['Pjs-Bold'],  }}>Masukkan Deskripsi</Text>
         <View style={styles.containerFormDeskripsi}>     
@@ -169,7 +227,7 @@ const handleUpload = async () => {
              <Note style={{marginLeft:10, marginRight:10,  marginTop:-4}}color={colors.grey()} variant="Linear" size={20}/>
                 <TextInput
                     placeholder="Deskripsi"
-                    value={dataBarang.deskripsi}
+                    value={DataBarang.description}
                     onChangeText={(text) => handleChange("deskripsi", text)}
                     placeholderTextColor={colors.grey(0.6)}
                     multiline
@@ -206,6 +264,12 @@ const styles = StyleSheet.create({
     height: 600,
     alignItems:'center',
     borderRadius:50,
+  },
+  gambarBarang:{
+    borderRadius:20,
+    width: '100%',
+    height: '50%',
+    marginLeft:2,
   },
   containerButton:{
     marginTop:40,
@@ -247,6 +311,23 @@ const styles = StyleSheet.create({
     width:300,
   },
   itemForm:{
+    flexDirection:"row",
+    flex:1,
+    backgroundColor: '#FFFFFF',
+    alignItems:'center',
+    borderRadius: 20,
+    padding:5,
+  },
+  containerFormGambar:{
+    marginLeft:-15,
+    marginTop:30,
+    paddingRight:5,
+    backgroundColor: '#4CBED8',    
+    borderRadius: 20,
+    height: 250,
+    width:300,
+  },
+  itemFormGambar:{
     flexDirection:"row",
     flex:1,
     backgroundColor: '#FFFFFF',
